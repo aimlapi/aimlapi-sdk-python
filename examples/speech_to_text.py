@@ -2,23 +2,37 @@
 
 import asyncio
 
-from openai import AsyncOpenAI
+from aimlapi import AsyncAIMLAPI
 from openai.helpers import Microphone
 
-# gets OPENAI_API_KEY from your environment variables
-openai = AsyncOpenAI()
+# gets AIML_API_KEY from your environment variables
+aimlapi = AsyncAIMLAPI()
 
+# TODO: FIX FOR AIMLAPI + REMOVE COMMENTS
 
 async def main() -> None:
     print("Recording for the next 10 seconds...")
     recording = await Microphone(timeout=10).record()
     print("Recording complete")
-    transcription = await openai.audio.transcriptions.create(
-        model="whisper-1",
-        file=recording,
+
+    result = await aimlapi.audio.transcriptions.create(
+        model="#g1_whisper-large",  # our STT model ID
+        file=recording,  # bytes-like object from Microphone
     )
 
-    print(transcription.text)
+    transcript = (
+        result.get("result", {})
+        .get("results", {})
+        .get("channels", [{}])[0]
+        .get("alternatives", [{}])[0]
+        .get("transcript")
+    )
+
+    if transcript:
+        print("Transcription:")
+        print(transcript)
+    else:
+        print("Full STT response:", result)
 
 
 if __name__ == "__main__":

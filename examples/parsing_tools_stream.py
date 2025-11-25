@@ -3,8 +3,8 @@ from __future__ import annotations
 import rich
 from pydantic import BaseModel
 
-import openai
-from openai import OpenAI
+import aimlapi
+from aimlapi import AIMLAPI
 
 
 class GetWeather(BaseModel):
@@ -12,8 +12,9 @@ class GetWeather(BaseModel):
     country: str
 
 
-client = OpenAI()
+client = AIMLAPI()
 
+# TODO: FIX MESSAGES
 
 with client.chat.completions.stream(
     model="gpt-4o-2024-08-06",
@@ -26,7 +27,7 @@ with client.chat.completions.stream(
     tools=[
         # because we're using `.parse_stream()`, the returned tool calls
         # will be automatically deserialized into this `GetWeather` type
-        openai.pydantic_function_tool(GetWeather, name="get_weather"),
+        aimlapi.pydantic_function_tool(GetWeather, name="get_weather"),
     ],
     parallel_tool_calls=True,
 ) as stream:

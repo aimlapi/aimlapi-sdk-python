@@ -3,8 +3,7 @@ from typing import List
 import rich
 from pydantic import BaseModel
 
-from openai import OpenAI
-
+from aimlapi import AIMLAPI
 
 class Step(BaseModel):
     explanation: str
@@ -16,7 +15,7 @@ class MathResponse(BaseModel):
     final_answer: str
 
 
-client = OpenAI()
+client = AIMLAPI()
 id = None
 
 with client.responses.create(
@@ -44,3 +43,6 @@ with client.responses.retrieve(
     for event in stream:
         if "output_text" in event.type:
             rich.print(event)
+        if event.type == "response.completed":
+            rich.print("Final output:")
+            rich.print(event.response.output_text)
