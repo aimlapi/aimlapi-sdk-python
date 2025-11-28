@@ -1,6 +1,6 @@
 [project]
 name = "aimlapi-sdk-python"
-version = "2.8.1-beta.1"
+version = "v2.8.1-beta.2"
 description = "AI/ML API Python SDK"
 dynamic = ["readme"]
 license = "Apache-2.0"
